@@ -600,40 +600,6 @@ async function getMediaProxys(musicItem, quality, err_i = 0) {
                     url
                 }
                 break;
-            case "2": // By: 微信公众号@洛雪音乐
-                // 反馈群组：null
-                // MusicFree: null
-                // LX Music: https://88.lxmusic.xn--fiqs8s/script?key=lxmusic
-                res = (
-                    await axios_1.default.get(`https://88.lxmusic.xn--fiqs8s/lxmusicv3/url/kg/${ musicItem.hash || musicItem.id }/${ lxQuality }`, {
-                        headers: {
-                            "X-Request-Key": "lxmusic",
-                            "User-Agent": "lx-music-mobile/2.0.0"
-                        }
-                    })
-                ).data;
-                url = res.data;
-                if (url) return {
-                    url,
-                }
-                break;
-            case "3": // By: 大鱼吃小鱼
-                // 反馈群组：https://t.me/yus_share
-                // MusicFree: null
-                // LX Music: https://m-api.ceseet.me/script
-                res = (
-                    await axios_1.default.get(`https://m-api.ceseet.me/url/kg/${ musicItem.hash || musicItem.id }/${ lxQuality }`, {
-                        headers: {
-                            "X-Request-Key": "",
-                            "User-Agent": "lx-music-mobile/2.0.0"
-                        }
-                    })
-                ).data;
-                url = res.data;
-                if (url) return {
-                    url,
-                }
-                break;
             case "4": // By: Huibq
                 // 反馈群组：https://t.me/+Xh7BWUUPqUZlMDU1
                 // MusicFree: https://fastly.jsdelivr.net/gh/Huibq/keep-alive/Music_Free/myPlugins.json
