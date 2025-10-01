@@ -600,6 +600,40 @@ async function getMediaProxys(musicItem, quality, err_i = 0) {
                     url
                 }
                 break;
+            case "2": // By: 微信公众号@洛雪音乐
+                // 反馈群组：null
+                // MusicFree: null
+                // LX Music: https://88.lxmusic.xn--fiqs8s/script?key=lxmusic
+                res = (
+                    await axios_1.default.get(`https://88.lxmusic.xn--fiqs8s/lxmusicv3/url/kg/${ musicItem.hash || musicItem.id }/${ lxQuality }`, {
+                        headers: {
+                            "X-Request-Key": "lxmusic",
+                            "User-Agent": "lx-music-mobile/2.0.0"
+                        }
+                    })
+                ).data;
+                url = res.data;
+                if (url) return {
+                    url,
+                }
+                break;
+            case "3": // By: 大鱼吃小鱼
+                // 反馈群组：https://t.me/yus_share
+                // MusicFree: null
+                // LX Music: https://m-api.ceseet.me/script
+                res = (
+                    await axios_1.default.get(`https://m-api.ceseet.me/url/kg/${ musicItem.hash || musicItem.id }/${ lxQuality }`, {
+                        headers: {
+                            "X-Request-Key": "",
+                            "User-Agent": "lx-music-mobile/2.0.0"
+                        }
+                    })
+                ).data;
+                url = res.data;
+                if (url) return {
+                    url,
+                }
+                break;
             case "4": // By: Huibq
                 // 反馈群组：https://t.me/+Xh7BWUUPqUZlMDU1
                 // MusicFree: https://fastly.jsdelivr.net/gh/Huibq/keep-alive/Music_Free/myPlugins.json
@@ -790,6 +824,19 @@ async function importMusicSheet(urlLike) {
         });
         if (response.status === 200 && response.data.status === 1) {
             musicList = await getMusicInfo(response.data.data);
+            musicList = musicList.map(formatMusicItem);
+            if (data.info.count > 500 && musicList.length == 500) {
+                musicList = musicList.slice(0, 490);
+                let count = Math.ceil((data.info.count - 500) / 30) + 17;
+                for (let page = 16; page < count; page++) {
+                    try {
+                        let sheetItem = (await getMusicSheetInfo({
+                            id: (data.info.global_collection_id || ("collection_3_" + data.info.userid + "_" + data.info.id + "_0"))
+                        }, page));
+                        musicList.push(...sheetItem.musicList);
+                    } catch (err) {}
+                }
+            }
         }
     }
     return musicList;
@@ -863,11 +910,11 @@ async function getMusicComments(musicItem, page = 1) {
 module.exports = {
     platform: "酷狗音乐",
     author: '反馈Q群@365976134',
-    version: "2025.09.14",
+    version: "2025.10.01",
     appVersion: ">0.4.0-alpha.0",
     srcUrl: "https://raw.githubusercontent.com/ThomasBy2025/musicfree/refs/heads/main/plugins/kg.js",
     cacheControl: "no-store",
-    description: "## By: Thomas喲  \n#### 版本: 2025.09.14  \n支持导入单曲，获取评论  \n设置用户变量，发现歌单  \n增加酷我渠道，修复解析  \n#### 音源重定向  \n支持的插件如下  \n酷狗音乐, 小枸音乐, 元力KG  \n#### Bug反馈  \n[点我加入反馈群](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=x8r6m0bYYon_pCgT0BRc1ohwZmkkY61Q&authKey=DpmUioCvx45WjRRBnbRT2DsJ7LL6DNY3uau%2BFKPgR%2FSKz4EgYqUjEU5tJNi%2BkNPl&noverify=0&group_code=365976134)  \n#### 支持作者  \n![支持作者](https://raw.githubusercontent.com/ThomasBy2025/hikerview/refs/heads/main/mm_facetoface_collect_qrcode_1757315185814.png)",
+    description: "## By: Thomas喲\n#### 版本: 2025.10.01  \n修复酷狗码导入的歌曲没有信息显示  \n修复酷狗码最多导入500首歌的问题  \n#### 版本: 2025.09.14  \n支持导入单曲，获取评论  \n设置用户变量，发现歌单  \n增加酷我渠道，修复解析  \n#### 音源重定向  \n支持的插件如下  \n酷狗音乐, 小枸音乐, 元力KG  \n#### Bug反馈  \n[点我加入反馈群](http://qm.qq.com/cgi-bin/qm/qr?_wv=1027&k=x8r6m0bYYon_pCgT0BRc1ohwZmkkY61Q&authKey=DpmUioCvx45WjRRBnbRT2DsJ7LL6DNY3uau%2BFKPgR%2FSKz4EgYqUjEU5tJNi%2BkNPl&noverify=0&group_code=365976134)  \n#### 支持作者  \n![支持作者](https://raw.githubusercontent.com/ThomasBy2025/hikerview/refs/heads/main/mm_facetoface_collect_qrcode_1757315185814.png)",
     hints: {
         importMusicSheet: [
             "仅支持酷狗APP通过酷狗码导入，输入纯数字酷狗码即可。",
